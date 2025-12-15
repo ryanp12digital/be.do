@@ -7,7 +7,7 @@ import Timeline from './pages/Timeline';
 function App() {
     return (
         <BrowserRouter>
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-neutral-50">
                 <Navigation />
                 <Routes>
                     <Route path="/" element={<Estrategia />} />

@@ -1,0 +1,233 @@
+/* ============================================
+   SISTEMA DE DESIGN - BE.DO
+   Variáveis CSS para design minimalista e sofisticado
+   ============================================ */
+
+:root {
+  /* ==================== CORES ==================== */
+  
+  /* Primária - Azul Profissional */
+  --primary: 220 90% 56%;
+  --primary-hover: 220 90% 48%;
+  --primary-light: 220 90% 96%;
+  --primary-dark: 220 90% 40%;
+  
+  /* Neutra - Escala de Cinzas Sofisticados */
+  --neutral-950: 220 20% 8%;
+  --neutral-900: 220 20% 10%;
+  --neutral-800: 220 18% 18%;
+  --neutral-700: 220 15% 25%;
+  --neutral-600: 220 12% 40%;
+  --neutral-500: 220 10% 50%;
+  --neutral-400: 220 10% 65%;
+  --neutral-300: 220 10% 80%;
+  --neutral-200: 220 12% 88%;
+  --neutral-100: 220 15% 95%;
+  --neutral-50: 220 20% 98%;
+  
+  /* Semântica - Estados */
+  --success: 142 76% 36%;
+  --success-light: 142 76% 96%;
+  --warning: 38 92% 50%;
+  --warning-light: 38 92% 96%;
+  --error: 0 84% 60%;
+  --error-light: 0 84% 96%;
+  --info: 199 89% 48%;
+  --info-light: 199 89% 96%;
+  
+  /* Cores de Categoria (para tags) */
+  --emerald: 142 76% 36%;
+  --emerald-light: 142 76% 96%;
+  --purple: 262 52% 47%;
+  --purple-light: 262 52% 96%;
+  --amber: 38 92% 50%;
+  --amber-light: 38 92% 96%;
+  --red: 0 84% 60%;
+  --red-light: 0 84% 96%;
+  --blue: 217 91% 60%;
+  --blue-light: 217 91% 96%;
+  --indigo: 243 75% 59%;
+  --indigo-light: 243 75% 96%;
+  --orange: 25 95% 53%;
+  --orange-light: 25 95% 96%;
+  
+  /* ==================== TIPOGRAFIA ==================== */
+  
+  /* Famílias de Fonte */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Outfit', var(--font-primary);
+  --font-mono: 'Courier New', monospace;
+  
+  /* Tamanhos de Fonte - Mobile First */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 2rem;       /* 32px */
+  --text-4xl: 2.5rem;     /* 40px */
+  
+  /* Pesos de Fonte */
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+  --tracking-ultra: 0.2em;
+  
+  /* ==================== ESPAÇAMENTOS ==================== */
+  
+  /* Espaçamento Base */
+  --space-xs: 0.5rem;     /* 8px */
+  --space-sm: 1rem;       /* 16px */
+  --space-md: 1.5rem;     /* 24px */
+  --space-lg: 2rem;       /* 32px */
+  --space-xl: 3rem;       /* 48px */
+  --space-2xl: 5rem;      /* 80px */
+  --space-3xl: 7.5rem;    /* 120px */
+  
+  /* Container */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+  --container-max: 1200px;
+  
+  /* ==================== BORDAS ==================== */
+  
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-base: 0.5rem;  /* 8px */
+  --radius-md: 0.75rem;   /* 12px */
+  --radius-lg: 1rem;      /* 16px */
+  --radius-xl: 1.5rem;    /* 24px */
+  --radius-2xl: 2rem;     /* 32px */
+  --radius-full: 9999px;
+  
+  /* Border Width */
+  --border-thin: 1px;
+  --border-base: 2px;
+  --border-thick: 3px;
+  
+  /* ==================== SOMBRAS ==================== */
+  
+  /* Box Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+  /* ==================== TRANSIÇÕES ==================== */
+  
+  /* Duração */
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+  
+  /* Easing */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Transições Completas */
+  --transition-fast: all var(--duration-fast) var(--ease-smooth);
+  --transition-base: all var(--duration-base) var(--ease-smooth);
+  --transition-slow: all var(--duration-slow) var(--ease-smooth);
+  
+  /* ==================== Z-INDEX ==================== */
+  
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  
+  /* ==================== OUTROS ==================== */
+  
+  /* Opacity */
+  --opacity-disabled: 0.5;
+  --opacity-hover: 0.8;
+  
+  /* Blur */
+  --blur-sm: 4px;
+  --blur-base: 8px;
+  --blur-md: 12px;
+  --blur-lg: 16px;
+  --blur-xl: 24px;
+}
+
+/* ==================== RESPONSIVE - DESKTOP ==================== */
+@media (min-width: 768px) {
+  :root {
+    /* Aumentar tamanhos de fonte para desktop */
+    --text-3xl: 3rem;       /* 48px */
+    --text-4xl: 4rem;       /* 64px */
+  }
+}
+
+/* ==================== UTILITÁRIOS DE CORES ==================== */
+
+/* Backgrounds */
+.bg-primary {
+  background-color: hsl(var(--primary));
+}
+
+.bg-neutral-50 {
+  background-color: hsl(var(--neutral-50));
+}
+
+.bg-neutral-100 {
+  background-color: hsl(var(--neutral-100));
+}
+
+/* Text Colors */
+.text-primary {
+  color: hsl(var(--primary));
+}
+
+.text-neutral-900 {
+  color: hsl(var(--neutral-900));
+}
+
+.text-neutral-700 {
+  color: hsl(var(--neutral-700));
+}
+
+.text-neutral-500 {
+  color: hsl(var(--neutral-500));
+}
+
+/* Border Colors */
+.border-neutral-200 {
+  border-color: hsl(var(--neutral-200));
+}
+
+.border-neutral-300 {
+  border-color: hsl(var(--neutral-300));
+}

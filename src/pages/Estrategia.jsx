@@ -1,363 +1,338 @@
 import React from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/common/Tabs';
+import Badge, { BadgeCount } from '../components/common/Badge';
+import Stats, { StatsGrid, StatInline } from '../components/common/Stats';
+import Card from '../components/common/Card';
 
 export default function Estrategia() {
-  const [expanded, setExpanded] = React.useState({
-    captacao: true,
-    remarketing: true,
-    topo: true,
-    meio: true,
-    fundo: true,
-  });
+  const [selectedFunil, setSelectedFunil] = React.useState('todos');
+  const [selectedTemperatura, setSelectedTemperatura] = React.useState('todos');
 
-  const toggle = (id) => {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  // Dados dos públicos organizados
+  const publicos = {
+    captacao: [
+      {
+        id: 'c1',
+        nome: 'Público Aberto',
+        codigo: 'C1',
+        funil: 'topo',
+        temperatura: 'frio',
+        descricao: 'Segmentação mínima: região/país + idade (23–60).',
+        detalhes: 'Sem interesses detalhados.',
+        otimizacao: 'Leads ou Purchase',
+        objetivo: 'Base para alimentar todo o funil',
+      },
+      {
+        id: 'c2',
+        nome: 'Semelhantes a Clientes',
+        codigo: 'C2',
+        funil: 'topo',
+        temperatura: 'frio',
+        descricao: 'Públicos semelhantes a compradores (dados de CRM + evento Purchase).',
+        detalhes: 'Começar com 1–3% e abrir para 5–10% na escala.',
+        otimizacao: 'Conversões',
+        objetivo: 'Encontrar novos clientes similares',
+      },
+      {
+        id: 'c3',
+        nome: 'Semelhantes a Leads Qualificados',
+        codigo: 'C3',
+        funil: 'meio',
+        temperatura: 'morno',
+        descricao: 'Fonte: leads que pediram orçamento e têm bom fit.',
+        detalhes: 'Foco em gerar leads e visitas com maior propensão a orçamento.',
+        otimizacao: 'Leads',
+        objetivo: 'Leads mais qualificados',
+      },
+      {
+        id: 'c4',
+        nome: 'Semelhantes de Alta Intenção',
+        codigo: 'C4',
+        funil: 'meio',
+        temperatura: 'morno',
+        descricao: 'Fonte: AddToCart, InitiateCheckout, AddPaymentInfo.',
+        detalhes: 'Atrair pessoas novas muito parecidas com quem quase compra.',
+        otimizacao: 'Conversões',
+        objetivo: 'Alta intenção de compra',
+      },
+    ],
+    remarketing: [
+      {
+        id: 'm1',
+        nome: 'Visitantes de Site',
+        codigo: 'RM M1',
+        funil: 'meio',
+        temperatura: 'morno',
+        descricao: 'Todos os visitantes dos últimos 30 dias.',
+        detalhes: 'Subgrupos: páginas de produtos, blog, sessões com 2+ páginas.',
+        otimizacao: 'Engajamento',
+        objetivo: 'Reengajar visitantes',
+      },
+      {
+        id: 'm2',
+        nome: 'Engajamento Forte',
+        codigo: 'RM M2',
+        funil: 'meio',
+        temperatura: 'morno',
+        descricao: 'Clicou em links, salvou ou compartilhou conteúdo.',
+        detalhes: 'Inclui quem enviou DM ou interagiu com o perfil (90 dias).',
+        otimizacao: 'Conversões',
+        objetivo: 'Converter engajados',
+      },
+      {
+        id: 'm3',
+        nome: 'Vídeo View',
+        codigo: 'RM M3',
+        funil: 'meio',
+        temperatura: 'morno',
+        descricao: 'Assistiu 50–75% de vídeos sobre tipos de etiquetas e casos de uso.',
+        detalhes: 'Público ideal para conteúdos de comparação e prova social.',
+        otimizacao: 'Conversões',
+        objetivo: 'Educar e converter',
+      },
+      {
+        id: 'q1',
+        nome: 'Intenção Sem Compra',
+        codigo: 'RM Q1',
+        funil: 'fundo',
+        temperatura: 'quente',
+        descricao: 'ViewContent sem AddToCart, AddToCart sem Purchase, InitiateCheckout sem Purchase.',
+        detalhes: 'Forte intenção, ainda sem conversão — ideal para ofertas diretas e redução de fricção.',
+        otimizacao: 'Conversões',
+        objetivo: 'Fechar venda',
+      },
+      {
+        id: 'q2',
+        nome: 'Carrinho Abandonado',
+        codigo: 'RM Q2',
+        funil: 'fundo',
+        temperatura: 'quente',
+        descricao: 'AddToCart / InitiateCheckout / AddPaymentInfo nos últimos 3–7 dias, sem Purchase.',
+        detalhes: 'Foco em urgência, garantia, facilitação de contato e orçamento.',
+        otimizacao: 'Conversões',
+        objetivo: 'Recuperar carrinho',
+      },
+      {
+        id: 'q3',
+        nome: 'Leads Recentes',
+        codigo: 'RM Q3',
+        funil: 'fundo',
+        temperatura: 'quente',
+        descricao: 'Formulário de orçamento enviado (últimos 7–14 dias) e cliques em "Pedir orçamento" / "WhatsApp".',
+        detalhes: 'Público pronto para abordagem comercial e follow-up.',
+        otimizacao: 'Conversões',
+        objetivo: 'Fechar negócio',
+      },
+      {
+        id: 'q4',
+        nome: 'Clientes (CRM)',
+        codigo: 'RM Q4',
+        funil: 'fundo',
+        temperatura: 'quente',
+        descricao: 'Base interna da Be.do + lista de clientes que o cliente já possuía antes de fechar.',
+        detalhes: 'Segmentar por recência (30/90/180+ dias) e tipo de produto. Usar para recompra, cross-sell e reativação.',
+        otimizacao: 'Retenção',
+        objetivo: 'Recompra e upsell',
+      },
+    ],
   };
 
-  const Tag = ({ label, type }) => {
-    const colors = {
-      funil: 'bg-gray-100 text-gray-700',
-      frio: 'bg-blue-50 text-blue-700',
-      morno: 'bg-amber-50 text-amber-700',
-      quente: 'bg-red-50 text-red-700',
-      captacao: 'bg-emerald-50 text-emerald-700',
-      remarketing: 'bg-purple-50 text-purple-700',
-    };
-    return (
-      <span className={`inline-flex items-center px-2 py-0.5 text-[10px] rounded-sm border ${colors[type]} border-gray-200 uppercase tracking-wider`}>
-        {label}
-      </span>
-    );
+  // Filtrar públicos
+  const filtrarPublicos = (lista) => {
+    return lista.filter(p => {
+      const matchFunil = selectedFunil === 'todos' || p.funil === selectedFunil;
+      const matchTemp = selectedTemperatura === 'todos' || p.temperatura === selectedTemperatura;
+      return matchFunil && matchTemp;
+    });
+  };
+
+  const publicosCaptacaoFiltrados = filtrarPublicos(publicos.captacao);
+  const publicosRemarketingFiltrados = filtrarPublicos(publicos.remarketing);
+
+  return (
+    <div className="min-h-screen bg-neutral-50 py-8 md:py-12 px-6 md:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <header className="mb-16 md:mb-20 text-center">
+          <h1 className="text-4xl md:text-6xl font-light text-neutral-900 mb-4 text-balance">
+            Estratégia de Públicos
+          </h1>
+          <p className="text-lg md:text-xl text-neutral-600 mb-6 max-w-3xl mx-auto">
+            Mapa completo de públicos Meta Ads 2025 · Organizado por funil, temperatura e vertente
+          </p>
+          <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
+        </header>
+
+        {/* Stats Overview */}
+        <section className="mb-16 md:mb-20">
+          <StatsGrid columns={4}>
+            <Stats
+              icon="📊"
+              label="Total de Públicos"
+              value={publicos.captacao.length + publicos.remarketing.length}
+              variant="primary"
+            />
+            <Stats
+              icon="🎯"
+              label="Captação"
+              value={publicos.captacao.length}
+              variant="success"
+            />
+            <Stats
+              icon="🔄"
+              label="Remarketing"
+              value={publicos.remarketing.length}
+              variant="warning"
+            />
+            <Stats
+              icon="💰"
+              label="Fundo de Funil"
+              value={publicos.remarketing.filter(p => p.funil === 'fundo').length}
+              variant="neutral"
+            />
+          </StatsGrid>
+        </section>
+
+        {/* Filtros e Tabs */}
+        <section className="mb-12">
+          <Tabs defaultValue="todos">
+            <TabsList>
+              <TabsTrigger value="todos">
+                <span className="text-2xl mr-2">🎯</span>
+                Todos os Públicos
+                <BadgeCount variant="default" count={publicos.captacao.length + publicos.remarketing.length} />
+              </TabsTrigger>
+              <TabsTrigger value="topo">
+                <span className="text-2xl mr-2">🎯</span>
+                Topo de Funil
+                <BadgeCount variant="topo" count={[...publicos.captacao, ...publicos.remarketing].filter(p => p.funil === 'topo').length} />
+              </TabsTrigger>
+              <TabsTrigger value="meio">
+                <span className="text-2xl mr-2">🔥</span>
+                Meio de Funil
+                <BadgeCount variant="meio" count={[...publicos.captacao, ...publicos.remarketing].filter(p => p.funil === 'meio').length} />
+              </TabsTrigger>
+              <TabsTrigger value="fundo">
+                <span className="text-2xl mr-2">💰</span>
+                Fundo de Funil
+                <BadgeCount variant="fundo" count={[...publicos.captacao, ...publicos.remarketing].filter(p => p.funil === 'fundo').length} />
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Conteúdo das Tabs */}
+            <TabsContent value="todos">
+              <VertenteSection
+                titulo="Captação"
+                descricao="Trazer novos públicos para dentro do funil"
+                publicos={publicosCaptacaoFiltrados}
+                variant="captacao"
+              />
+              <VertenteSection
+                titulo="Remarketing"
+                descricao="Reengajar quem já interagiu ou está na base"
+                publicos={publicosRemarketingFiltrados}
+                variant="remarketing"
+              />
+            </TabsContent>
+
+            <TabsContent value="topo">
+              <FunilSection
+                funil="topo"
+                publicos={[...publicosCaptacaoFiltrados, ...publicosRemarketingFiltrados].filter(p => p.funil === 'topo')}
+              />
+            </TabsContent>
+
+            <TabsContent value="meio">
+              <FunilSection
+                funil="meio"
+                publicos={[...publicosCaptacaoFiltrados, ...publicosRemarketingFiltrados].filter(p => p.funil === 'meio')}
+              />
+            </TabsContent>
+
+            <TabsContent value="fundo">
+              <FunilSection
+                funil="fundo"
+                publicos={[...publicosCaptacaoFiltrados, ...publicosRemarketingFiltrados].filter(p => p.funil === 'fundo')}
+              />
+            </TabsContent>
+          </Tabs>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+// Componente para seção de vertente
+function VertenteSection({ titulo, descricao, publicos, variant }) {
+  return (
+    <div className="mb-16">
+      <div className="flex items-center gap-4 mb-8">
+        <Badge variant={variant} size="lg">
+          {variant === 'captacao' ? '📊' : '🔄'} {titulo}
+        </Badge>
+        <p className="text-lg text-neutral-600">{descricao}</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {publicos.map(publico => (
+          <PublicoCard key={publico.id} publico={publico} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Componente para seção de funil
+function FunilSection({ funil, publicos }) {
+  const info = {
+    topo: { emoji: '🎯', titulo: 'Topo de Funil', descricao: 'Alcance, descoberta e tráfego novo' },
+    meio: { emoji: '🔥', titulo: 'Meio de Funil', descricao: 'Nutrir, educar e aumentar intenção' },
+    fundo: { emoji: '💰', titulo: 'Fundo de Funil', descricao: 'Converter, fechar e reativar' },
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="mb-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-light text-gray-900 mb-2">
-            Be.do Etiquetas
-          </h1>
-          <p className="text-xs text-gray-500 uppercase tracking-[0.2em] mb-3">
-            Mapa Mental · Estratégia de Públicos Meta Ads 2025
-          </p>
-          <div className="w-16 h-px bg-gray-300 mx-auto" />
-        </header>
+    <div>
+      <div className="flex items-center gap-4 mb-8">
+        <span className="text-4xl">{info[funil].emoji}</span>
+        <div>
+          <h2 className="text-2xl font-semibold text-neutral-900">{info[funil].titulo}</h2>
+          <p className="text-lg text-neutral-600">{info[funil].descricao}</p>
+        </div>
+      </div>
 
-        {/* Nó Central */}
-        <section className="flex justify-center mb-12">
-          <div className="border border-gray-200 bg-white px-8 py-5 rounded-sm text-center">
-            <p className="text-[11px] text-gray-500 uppercase tracking-[0.2em] mb-1">
-              Centro da Estratégia
-            </p>
-            <h2 className="text-lg md:text-xl font-light text-gray-900 mb-2">
-              Públicos por Funil, Temperatura e Vertente
-            </h2>
-            <p className="text-xs text-gray-500 max-w-xl mx-auto">
-              Organização dos públicos em duas vertentes principais:
-              <span className="font-medium"> captação</span> e <span className="font-medium">remarketing</span>,
-              cruzando <span className="font-medium">funil (topo, meio, fundo)</span> com
-              <span className="font-medium"> temperatura (frio, morno, quente)</span>.
-            </p>
-          </div>
-        </section>
-
-        {/* 1. Vertentes: Captação x Remarketing */}
-        <section className="space-y-6 mb-10">
-          <div className="border border-gray-200 bg-white">
-            <button
-              onClick={() => toggle('captacao')}
-              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
-            >
-              <div className="flex items-center space-x-3">
-                <span className="text-[11px] text-gray-400 font-mono">01</span>
-                <h3 className="text-lg font-light text-gray-900">Vertente: Captação</h3>
-                <Tag label="Funil: Topo / Meio" type="funil" />
-                <Tag label="Temperatura: Frio / Morno" type="frio" />
-              </div>
-              <span className="text-gray-400 text-xl font-light">{expanded.captacao ? '−' : '+'}</span>
-            </button>
-            {expanded.captacao && (
-              <div className="px-6 pb-6 border-t border-gray-100">
-                <div className="grid md:grid-cols-2 gap-8 mt-6">
-                  <div className="space-y-5">
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Captação C1 — Público Aberto</p>
-                        <div className="space-x-1">
-                          <Tag label="Topo" type="funil" />
-                          <Tag label="Frio" type="frio" />
-                          <Tag label="Captação" type="captacao" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Segmentação mínima: região/país + idade (23–60).</p>
-                      <p className="text-sm text-gray-700 mb-1">Sem interesses detalhados.</p>
-                      <p className="text-xs text-gray-500">Otimização para <span className="font-medium">Leads</span> ou <span className="font-medium">Purchase</span>. Base para alimentar todo o funil.</p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Captação C2 — Semelhantes a Clientes</p>
-                        <div className="space-x-1">
-                          <Tag label="Topo/Meio" type="funil" />
-                          <Tag label="Frio" type="frio" />
-                          <Tag label="Captação" type="captacao" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Públicos semelhantes a compradores (dados de CRM + evento Purchase).</p>
-                      <p className="text-xs text-gray-500">Começar com <span className="font-medium">1–3%</span> e abrir para <span className="font-medium">5–10%</span> na escala.</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-5">
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Captação C3 — Semelhantes a Leads Qualificados</p>
-                        <div className="space-x-1">
-                          <Tag label="Topo/Meio" type="funil" />
-                          <Tag label="Frio/Morno" type="morno" />
-                          <Tag label="Captação" type="captacao" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Fonte: leads que pediram orçamento e têm bom fit.</p>
-                      <p className="text-xs text-gray-500">Foco em gerar leads e visitas com maior propensão a orçamento.</p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Captação C4 — Semelhantes de Alta Intenção</p>
-                        <div className="space-x-1">
-                          <Tag label="Meio" type="funil" />
-                          <Tag label="Frio/Morno" type="morno" />
-                          <Tag label="Captação" type="captacao" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Fonte: AddToCart, InitiateCheckout, AddPaymentInfo.</p>
-                      <p className="text-xs text-gray-500">Atrair pessoas novas muito parecidas com quem quase compra.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="border border-gray-200 bg-white">
-            <button
-              onClick={() => toggle('remarketing')}
-              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
-            >
-              <div className="flex items-center space-x-3">
-                <span className="text-[11px] text-gray-400 font-mono">02</span>
-                <h3 className="text-lg font-light text-gray-900">Vertente: Remarketing</h3>
-                <Tag label="Funil: Meio / Fundo" type="funil" />
-                <Tag label="Temperatura: Morno / Quente" type="quente" />
-              </div>
-              <span className="text-gray-400 text-xl font-light">{expanded.remarketing ? '−' : '+'}</span>
-            </button>
-            {expanded.remarketing && (
-              <div className="px-6 pb-6 border-t border-gray-100">
-                <div className="grid md:grid-cols-2 gap-8 mt-6">
-                  {/* Meio de Funil - Mornos */}
-                  <div className="space-y-5">
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">RM M1 — Visitantes de Site</p>
-                        <div className="space-x-1">
-                          <Tag label="Meio" type="funil" />
-                          <Tag label="Morno" type="morno" />
-                          <Tag label="Remarketing" type="remarketing" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Todos os visitantes dos últimos 30 dias.</p>
-                      <p className="text-xs text-gray-500">Subgrupos: páginas de produtos, blog, sessões com 2+ páginas.</p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">RM M2 — Engajamento Forte</p>
-                        <div className="space-x-1">
-                          <Tag label="Meio" type="funil" />
-                          <Tag label="Morno" type="morno" />
-                          <Tag label="Remarketing" type="remarketing" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Clicou em links, salvou ou compartilhou conteúdo.</p>
-                      <p className="text-xs text-gray-500">Inclui quem enviou DM ou interagiu com o perfil (90 dias).</p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">RM M3 — Vídeo View</p>
-                        <div className="space-x-1">
-                          <Tag label="Meio" type="funil" />
-                          <Tag label="Morno" type="morno" />
-                          <Tag label="Remarketing" type="remarketing" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Assistiu 50–75% de vídeos sobre tipos de etiquetas e casos de uso.</p>
-                      <p className="text-xs text-gray-500">Público ideal para conteúdos de comparação e prova social.</p>
-                    </div>
-                  </div>
-
-                  {/* Fundo de Funil - Quentes */}
-                  <div className="space-y-5">
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">RM Q1 — Intenção Sem Compra</p>
-                        <div className="space-x-1">
-                          <Tag label="Fundo" type="funil" />
-                          <Tag label="Morno/Quente" type="quente" />
-                          <Tag label="Remarketing" type="remarketing" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">ViewContent sem AddToCart, AddToCart sem Purchase, InitiateCheckout sem Purchase.</p>
-                      <p className="text-xs text-gray-500">Forte intenção, ainda sem conversão — ideal para ofertas diretas e redução de fricção.</p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">RM Q2 — Carrinho Abandonado</p>
-                        <div className="space-x-1">
-                          <Tag label="Fundo" type="funil" />
-                          <Tag label="Quente" type="quente" />
-                          <Tag label="Remarketing" type="remarketing" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">AddToCart / InitiateCheckout / AddPaymentInfo nos últimos 3–7 dias, sem Purchase.</p>
-                      <p className="text-xs text-gray-500">Foco em urgência, garantia, facilitação de contato e orçamento.</p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">RM Q3 — Leads Recentes</p>
-                        <div className="space-x-1">
-                          <Tag label="Fundo" type="funil" />
-                          <Tag label="Quente" type="quente" />
-                          <Tag label="Remarketing" type="remarketing" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Formulário de orçamento enviado (últimos 7–14 dias) e cliques em "Pedir orçamento" / "WhatsApp".</p>
-                      <p className="text-xs text-gray-500">Público pronto para abordagem comercial e follow-up.</p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">RM Q4 — Clientes (CRM + Lista do Cliente)</p>
-                        <div className="space-x-1">
-                          <Tag label="Fundo" type="funil" />
-                          <Tag label="Quente" type="quente" />
-                          <Tag label="Remarketing" type="remarketing" />
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-1">Base interna da Be.do + lista de clientes que o cliente já possuía antes de fechar.</p>
-                      <p className="text-xs text-gray-500 mb-1">Segmentar por recência (30/90/180+ dias) e tipo de produto (adesivas, térmicas, ribbons, bobinas, lacre).</p>
-                      <p className="text-xs text-gray-500">Usar para recompra, cross-sell e reativação.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* 2. Visão por Funil */}
-        <section className="space-y-4 mb-10">
-          <h4 className="text-xs text-gray-500 uppercase tracking-[0.25em] mb-2">Camadas de Funil</h4>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="border border-gray-200 bg-white">
-              <button
-                onClick={() => toggle('topo')}
-                className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50"
-              >
-                <span className="text-sm font-light text-gray-900">Topo de Funil</span>
-                <span className="text-gray-400 text-lg font-light">{expanded.topo ? '−' : '+'}</span>
-              </button>
-              {expanded.topo && (
-                <div className="px-4 pb-4 border-t border-gray-100">
-                  <p className="text-[11px] text-gray-500 mt-3 mb-1">Objetivo</p>
-                  <p className="text-sm text-gray-700 mb-2">Alcance, descoberta e tráfego novo para alimentar o funil.</p>
-                  <p className="text-[11px] text-gray-500 mb-1">Principais públicos</p>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    <li>• Captação C1 — Público Aberto (Frio)</li>
-                    <li>• Captação C2 — Semelhantes a Clientes (Frio)</li>
-                    <li>• Captação C3 — Semelhantes a Leads Qualificados (Frio/Morno)</li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            <div className="border border-gray-200 bg-white">
-              <button
-                onClick={() => toggle('meio')}
-                className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50"
-              >
-                <span className="text-sm font-light text-gray-900">Meio de Funil</span>
-                <span className="text-gray-400 text-lg font-light">{expanded.meio ? '−' : '+'}</span>
-              </button>
-              {expanded.meio && (
-                <div className="px-4 pb-4 border-t border-gray-100">
-                  <p className="text-[11px] text-gray-500 mt-3 mb-1">Objetivo</p>
-                  <p className="text-sm text-gray-700 mb-2">Nutrir, educar e aumentar a intenção de compra.</p>
-                  <p className="text-[11px] text-gray-500 mb-1">Principais públicos</p>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    <li>• RM M1 — Visitantes de Site (Morno)</li>
-                    <li>• RM M2 — Engajamento Forte (Morno)</li>
-                    <li>• RM M3 — Vídeo View (Morno)</li>
-                    <li>• Captação C4 — Semelhantes de Alta Intenção (Frio/Morno)</li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            <div className="border border-gray-200 bg-white">
-              <button
-                onClick={() => toggle('fundo')}
-                className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50"
-              >
-                <span className="text-sm font-light text-gray-900">Fundo de Funil</span>
-                <span className="text-gray-400 text-lg font-light">{expanded.fundo ? '−' : '+'}</span>
-              </button>
-              {expanded.fundo && (
-                <div className="px-4 pb-4 border-t border-gray-100">
-                  <p className="text-[11px] text-gray-500 mt-3 mb-1">Objetivo</p>
-                  <p className="text-sm text-gray-700 mb-2">Converter, fechar negócio e reativar clientes.</p>
-                  <p className="text-[11px] text-gray-500 mb-1">Principais públicos</p>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    <li>• RM Q1 — Intenção Sem Compra (Morno/Quente)</li>
-                    <li>• RM Q2 — Carrinho Abandonado (Quente)</li>
-                    <li>• RM Q3 — Leads Recentes (Quente)</li>
-                    <li>• RM Q4 — Clientes (CRM + lista prévia do cliente) (Quente)</li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* Rodapé / Legenda */}
-        <footer className="pt-6 border-t border-gray-200">
-          <div className="grid md:grid-cols-3 gap-6 mb-6 text-sm">
-            <div className="space-y-1">
-              <p className="text-[11px] text-gray-500 uppercase tracking-[0.2em] mb-1">Temperatura</p>
-              <p className="text-xs text-gray-600">Frio — pessoas novas, ainda sem relação com a marca.</p>
-              <p className="text-xs text-gray-600">Morno — já interagiram (site, vídeo, perfil).</p>
-              <p className="text-xs text-gray-600">Quente — deram sinais claros de intenção ou já são clientes.</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-[11px] text-gray-500 uppercase tracking-[0.2em] mb-1">Vertente</p>
-              <p className="text-xs text-gray-600">Captação — trazer novos usuários para dentro do funil.</p>
-              <p className="text-xs text-gray-600">Remarketing — aproveitar quem já interagiu ou está na base.</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-[11px] text-gray-500 uppercase tracking-[0.2em] mb-1">Nota Estratégica 2025</p>
-              <p className="text-xs text-gray-600">
-                Meta Ads não otimiza mais com base em direcionamento detalhado.
-                A força da conta vem de sinais de conversão (pixel, CRM) e da organização
-                inteligente entre <span className="font-medium">funil</span>, <span className="font-medium">temperatura</span> e <span className="font-medium">vertente</span>.
-              </p>
-            </div>
-          </div>
-        </footer>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {publicos.map(publico => (
+          <PublicoCard key={publico.id} publico={publico} />
+        ))}
       </div>
     </div>
+  );
+}
+
+// Card de público
+function PublicoCard({ publico }) {
+  return (
+    <Card className="hover:scale-105 transition-transform duration-300 p-6">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <span className="text-sm font-mono text-neutral-500">{publico.codigo}</span>
+          <h3 className="text-lg font-semibold text-neutral-900 mt-1">{publico.nome}</h3>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Badge variant={publico.funil} size="sm">{publico.funil}</Badge>
+          <Badge variant={publico.temperatura} size="sm">{publico.temperatura}</Badge>
+        </div>
+      </div>
+
+      <p className="text-base text-neutral-700 mb-3">{publico.descricao}</p>
+      <p className="text-sm text-neutral-600 mb-4">{publico.detalhes}</p>
+
+      <div className="border-t border-neutral-200 pt-4 mt-4">
+        <div className="grid grid-cols-2 gap-3">
+          <StatInline icon="🎯" label="Otimização" value={publico.otimizacao} />
+          <StatInline icon="📈" label="Objetivo" value={publico.objetivo} />
+        </div>
+      </div>
+    </Card>
   );
 }
